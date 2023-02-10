@@ -1,3 +1,5 @@
+// Written by Reginald Frank
+
 package ipc
 
 import (
