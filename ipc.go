@@ -10,9 +10,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
+	"fmt"
 	"github.com/golang/glog"
 )
+
+// Dummy function to isolate errors
+func sayHi() {
+	fmt.Println("hello world")
+}
 
 // Creates a pipe at pipePath, deletes a previous file with the same name if it exists
 func CreatePipe(pipePath string) error {
