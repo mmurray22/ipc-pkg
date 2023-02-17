@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 	"fmt"
-	"github.com/golang/glog"
+	//"github.com/golang/glog"
 )
 
 // Dummy function to isolate errors
@@ -36,7 +36,7 @@ func CreatePipe(pipePath string) error {
 // All data is in little endian format
 func OpenPipeReader(pipePath string, pipeData chan<- []byte) error {
 	if !doesFileExist(pipePath) {
-		return errors.New("File doesn't exitst")
+		return errors.New("File doesn't exist")
 	}
 
 	pipeChannel := make(chan []byte, 10)
@@ -46,7 +46,7 @@ func OpenPipeReader(pipePath string, pipeData chan<- []byte) error {
 
 		pipe, fileErr := os.OpenFile(pipePath, os.O_RDONLY, 0777)
 		if fileErr != nil {
-			glog.Error("Cannot open pipe for reading:", fileErr)
+			fmt.Println("Cannot open pipe for reading:", fileErr)
 		}
 		defer pipe.Close()
 
@@ -81,7 +81,7 @@ func OpenPipeWriter(pipePath string, pipeInput <-chan []byte) error {
 
 		pipe, fileErr := os.OpenFile(pipePath, os.O_WRONLY, 0777)
 		if fileErr != nil {
-			glog.Error("Cannot open pipe for writing:", fileErr)
+			fmt.Println("Cannot open pipe for writing:", fileErr)
 		}
 		defer pipe.Close()
 
@@ -106,7 +106,7 @@ func loggedRead(reader io.Reader, numBytes uint64) []byte {
 	bytesRead, readErr := io.ReadFull(reader, readData)
 
 	if readErr != nil {
-		glog.Error("Pipe Writing Error: ", readErr, "[Desired Write size = ", numBytes, " Actually written size = ", bytesRead, "]")
+		fmt.Println("Pipe Writing Error: ", readErr, "[Desired Write size = ", numBytes, " Actually written size = ", bytesRead, "]")
 		return nil
 	} else {
 		return readData
@@ -118,7 +118,7 @@ func loggedWrite(writer io.Writer, data []byte) {
 
 	if writeErr != nil {
 		os.Exit(1)
-		glog.Error("Pipe Writing Error: ", writeErr, "[Desired Write size = ", len(data), " Actually written size = ", bytesWritten, "]")
+		fmt.Println("Pipe Writing Error: ", writeErr, "[Desired Write size = ", len(data), " Actually written size = ", bytesWritten, "]")
 	}
 }
 
