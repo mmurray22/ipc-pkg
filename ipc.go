@@ -1,4 +1,4 @@
-// Written by Reginald Frank
+// Original Source code from Reginald Frank
 
 package ipc
 
@@ -27,7 +27,7 @@ func CreatePipe(pipePath string) error {
 			return err
 		}
 	}
-
+	fmt.Println("Pipe created!")
 	return syscall.Mkfifo(pipePath, 0777)
 }
 
