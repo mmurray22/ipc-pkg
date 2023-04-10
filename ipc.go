@@ -39,36 +39,36 @@ func OpenPipeReader(pipePath string, pipeData chan<- []byte) error {
 		return errors.New("File doesn't exist")
 	}
 
-	pipeChannel := make(chan []byte, 10)
+// 	pipeChannel := make(chan []byte, 10)
 
-	go func(pipeChannel chan<- []byte) {
-		setupCloseHandler()
+// 	go func(pipeChannel chan<- []byte) {
+// 		setupCloseHandler()
 
-		pipe, fileErr := os.OpenFile(pipePath, os.O_RDONLY|os.O_NONBLOCK, 0777)
-		if fileErr != nil {
-			fmt.Println("Cannot open pipe for reading:", fileErr)
-		}
-		defer pipe.Close()
+// 		pipe, fileErr := os.OpenFile(pipePath, os.O_RDONLY|os.O_NONBLOCK, 0777)
+// 		if fileErr != nil {
+// 			fmt.Println("Cannot open pipe for reading:", fileErr)
+// 		}
+// 		defer pipe.Close()
 
-		reader := bufio.NewReader(pipe)
-		for {
-			select {
-			case <- done:
-				return
-			default:
-			const numSizeBytes = 64 / 8
+// 		reader := bufio.NewReader(pipe)
+// 		for {
+// 			select {
+// 			case <- done:
+// 				return
+// 			default:
+// 			const numSizeBytes = 64 / 8
 
-			readSizeBytes := loggedRead(reader, numSizeBytes)
-			readSize := binary.LittleEndian.Uint64(readSizeBytes[:])
+// 			readSizeBytes := loggedRead(reader, numSizeBytes)
+// 			readSize := binary.LittleEndian.Uint64(readSizeBytes[:])
 
-			readData := loggedRead(reader, readSize)
+// 			readData := loggedRead(reader, readSize)
 
-			pipeChannel <- readData
-			time.Sleep(time.Millisecond * 100) // wait for a bit before polling again
-			}
-		}
+// 			pipeChannel <- readData
+// 			time.Sleep(time.Millisecond * 100) // wait for a bit before polling again
+// 			}
+// 		}
 
-	}(pipeChannel)
+// 	}(pipeChannel)
 
 	return nil
 }
