@@ -44,15 +44,18 @@ func OpenPipeReader(pipePath string, pipeData chan<- []byte) error {
 	go func(pipeChannel chan<- []byte) {
 		setupCloseHandler()
 
-		pipe, fileErr := os.OpenFile(pipePath, os.O_RDONLY, 0777)
+		pipe, fileErr := os.OpenFile(pipePath, os.O_RDONLY|os.O_NONBLOCK, 0777)
 		if fileErr != nil {
 			fmt.Println("Cannot open pipe for reading:", fileErr)
 		}
 		defer pipe.Close()
 
 		reader := bufio.NewReader(pipe)
-
 		for {
+			select {
+			case <- done:
+				return
+			default:
 			const numSizeBytes = 64 / 8
 
 			readSizeBytes := loggedRead(reader, numSizeBytes)
@@ -61,6 +64,8 @@ func OpenPipeReader(pipePath string, pipeData chan<- []byte) error {
 			readData := loggedRead(reader, readSize)
 
 			pipeChannel <- readData
+			time.Sleep(time.Millisecond * 100) // wait for a bit before polling again
+			}
 		}
 
 	}(pipeChannel)
