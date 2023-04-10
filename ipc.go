@@ -34,7 +34,7 @@ func CreatePipe(pipePath string) error {
 // Blocking call to output the data pipePath into pipeData
 // Reads data from the pipe in format [size uint64, bytes []byte] where len(bytes) == size and (pipeData <- bytes)
 // All data is in little endian format
-func OpenPipeReader(pipePath string, pipeData chan<- []byte) error {
+func OpenPipeReader(pipePath string/*, pipeData chan<- []byte*/) error {
 	if !doesFileExist(pipePath) {
 		return errors.New("File doesn't exist")
 	}
